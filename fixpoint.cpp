@@ -1,3 +1,5 @@
+#include <ros/ros.h>
+
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -7,11 +9,27 @@
 #include <Eigen/Geometry>
 #include <Eigen/Eigenvalues>
 
+#include "std_msgs/String.h"
+#include "sensor_msgs/JointState.h"
+#include "gazebo_msgs/LinkStates.h"
+#include <geometry_msgs/Pose.h>
+#include <geometry_msgs/Twist.h>
+
 #include "std_msgs/Float32.h"
 #include "std_msgs/Float64MultiArray.h"
 
+#include "tic_toc.h"
+
 using namespace std;
 using namespace Eigen;
+
+ros::Publisher vel_pub;
+
+VectorXd nowRobotAngle(6);
+VectorXd RobotAngleL(6);
+VectorXd RobotAngleU(6);
+
+int Inrange = 1;
 
 VectorXd alphaDH(6);
 VectorXd aDH(6);
@@ -125,4 +143,119 @@ void velcontrol(VectorXd& endv, VectorXd& nowRobotAngle, std_msgs::Float64MultiA
         init_pos.data.at(i) = robov(i);
     }
     cout<<"pub: "<<robov.transpose()<<endl;
+}
+
+
+
+
+
+
+
+
+
+void jointstatesCallback(const sensor_msgs::JointStateConstPtr& msg)
+{
+    for(int i = 0; i < 6;i++){
+        nowRobotAngle(i)=msg->position[i];
+    }
+
+    cout<<"nowRobotAngle: "<<nowRobotAngle.transpose()<<endl;
+
+    for(int i = 0; i < 6; i++){
+        if(nowRobotAngle(i) < RobotAngleL(i)){
+            Inrange = 0;
+            cout<<"Attention!!!: No."<<i+1<<" outrange Small!"<<endl;
+        }
+        else if(nowRobotAngle(i) > RobotAngleU(i)){
+            cout<<"Attention!!!: No."<<i+1<<" outrange Large!"<<endl;
+            Inrange = 0;
+        }
+    }
+}
+
+void initalRobotAngleUL(){
+    RobotAngleL << -3.14, -2.01, -0.69, -3.14, -0.78, -3.14;
+    RobotAngleU << 3.14, 2.01, 3.83, 3.14, 3.92, 3.14;
+}
+
+
+
+
+
+
+int main(int argc, char **argv)
+{
+    ros::init(argc, argv, "fixpoint");
+    ros::NodeHandle nh;
+    ros::Rate loopHZ(50);
+    
+
+    ros::Subscriber sub = nh.subscribe<sensor_msgs::JointState>("/probot_anno/joint_states", 1, jointstatesCallback);
+
+
+    vel_pub = nh.advertise<std_msgs::Float64MultiArray>("/probot_anno/arm_vel_controller/command", 2);
+    InitialDH2();
+    initalRobotAngleUL();
+    nowRobotAngle << 0,0,0,0,0,0;
+    VectorXd safediff(6);
+    safediff << 0.1,0.1,0.1,0.1,0.1,0.1;
+    RobotAngleL += safediff;
+    RobotAngleU -= safediff;
+
+    std_msgs::Float64MultiArray init_pos;
+    init_pos.data.push_back(0);
+    init_pos.data.push_back(0);
+    init_pos.data.push_back(0);
+    init_pos.data.push_back(0);
+    init_pos.data.push_back(0);
+    init_pos.data.push_back(0);
+    sleep(1);
+
+
+    VectorXd endv(6);
+    endv << 0.0, 0.0, 0.0, -0.1, 0, 0;
+
+    int cnt = 100;
+
+    // VectorXd robov(6);
+    // robov << 0,0,0,0,0,0;
+    // VectorXd endv(6);
+    // VectorXd mybotAngle(6);
+    // mybotAngle = nowRobotAngle;
+    // mybotAngle(1) += 90.0*M_PI/180.0;
+    // mybotAngle(4) += -90.0*M_PI/180.0;
+
+
+    // endv2robov(robov, endvin6, mybotAngle);
+
+    // cout<<"robov: "<<robov.transpose()<<endl;
+
+
+    while (ros::ok()){
+        ros::spinOnce();
+
+        cout<<"endv: "<<endv.transpose()<<endl;
+
+
+        cnt++;
+        if(cnt > 100 && Inrange == 0){
+            endv = -endv;
+            Inrange = 1;
+            cnt = 0;
+        }
+        else{
+            Inrange = 1;
+        }
+
+
+        velcontrol(endv, nowRobotAngle, init_pos);
+        vel_pub.publish(init_pos);
+        
+        loopHZ.sleep();
+        cout<<endl;
+    }
+    
+
+
+    return 0;
 }

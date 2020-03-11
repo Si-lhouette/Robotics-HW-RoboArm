@@ -14,8 +14,8 @@ int main(int argc, char **argv)
 
 
     /* 设定目标末端位姿 */
-    Vector3d aimendPose(0.2289, 0, 0.454);
-    Vector3d aimendAngle(1.57, 0, 0);
+    Vector3d aimendPose(0.2, 0.2, 0.2007);
+    Vector3d aimendAngle(1.57, -1.57, 0);
     VectorXd robotAngle(6);
 
 

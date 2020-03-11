@@ -224,13 +224,14 @@ class MinimumSnapSolver {
             // cout<<endl;
 
 
-            // ooqpei::OoqpEigenInterface OOQPsolver;
+            ooqpei::OoqpEigenInterface OOQPsolver;
+            OOQPsolver.setIsInDebugMode(true);
 
-            // if(OOQPsolver.solve(Q_, c, A_, b_, l, u, x, true)) {
+            if(OOQPsolver.solve(Q_, c, A_, b_, l, u, x, true)) {
                 
-            //     //poly_coef_.col(i) = x;
-            //     cout<<"mainXXXXXXXXX:"<<endl<<x<<endl;
-            // }
+                //poly_coef_.col(i) = x;
+                cout<<"mainXXXXXXXXX:"<<endl<<x<<endl;
+            }
 
             //ros::Time time_end = ros::Time::now();
 

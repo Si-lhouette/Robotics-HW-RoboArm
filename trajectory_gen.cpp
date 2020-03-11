@@ -226,7 +226,7 @@ int main(int argc, char **argv)
     // }
 
 
-    //genTrajectory(wp_list);
+    genTrajectory(wp_list);
 
     Matrix<double, 18, 6> polyCoeff;
     getPolyCoeff(polyCoeff);
@@ -249,37 +249,37 @@ int main(int argc, char **argv)
     double t;
     int cnt = 0;
     // cin>>cnt;
-    while (ros::ok()){
+    // while (ros::ok()){
         
-        t = Clock.toc();
-        if(t > 15.0){
-            break;
-        }
-        //cout<<endl<<"-------------------"<<"t: "<<t<<endl;
-        getrobotv(Robotv, t, polyCoeff, ts);
-        for(int i = 0; i < 6; i++){
-            init_pos.data.at(i) = Robotv(i);
-        }
-        //cout<<"pub: "<<Robotv.transpose()<<endl;
+    //     t = Clock.toc();
+    //     if(t > 15.0){
+    //         break;
+    //     }
+    //     //cout<<endl<<"-------------------"<<"t: "<<t<<endl;
+    //     getrobotv(Robotv, t, polyCoeff, ts);
+    //     for(int i = 0; i < 6; i++){
+    //         init_pos.data.at(i) = Robotv(i);
+    //     }
+    //     //cout<<"pub: "<<Robotv.transpose()<<endl;
 
-        vel_pub.publish(init_pos);
+    //     vel_pub.publish(init_pos);
 
 
-        if(1){
-            ros::spinOnce();
-            cnt = 0;
-            for(int i = 0; i < wp_list.size(); i++){
-                double resuial = (nowRobotAngle - wp_list[i]).cwiseAbs().sum();
-                cout<<"resuial to No."<<i<<" : "<<resuial<<endl;
-                if( resuial < 0.1 ){
-                    cout<< "Get wayPoint No."<<i<<"   !!!!!!!!!!!!!!!"<<endl;
-                }
-            }
-        }
+    //     if(1){
+    //         ros::spinOnce();
+    //         cnt = 0;
+    //         for(int i = 0; i < wp_list.size(); i++){
+    //             double resuial = (nowRobotAngle - wp_list[i]).cwiseAbs().sum();
+    //             cout<<"resuial to No."<<i<<" : "<<resuial<<endl;
+    //             if( resuial < 0.1 ){
+    //                 cout<< "Get wayPoint No."<<i<<"   !!!!!!!!!!!!!!!"<<endl;
+    //             }
+    //         }
+    //     }
         
-        loopHZ.sleep();
-        cnt++;
-    }
+    //     loopHZ.sleep();
+    //     cnt++;
+    // }
 
 
 

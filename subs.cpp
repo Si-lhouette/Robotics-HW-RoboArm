@@ -21,17 +21,29 @@ using namespace std;
 using namespace Eigen;
 
 
- 
+VectorXd nowRobotAngle(6);
+VectorXd RobotAngleL(6);
+VectorXd RobotAngleU(6);
+
+
+
 void jointstatesCallback(const sensor_msgs::JointStateConstPtr& msg)
 {
-    float pos[6];
     for(int i = 0; i < 6;i++){
-        pos[i]=msg->position[i];
+        nowRobotAngle(i)=msg->position[i];
     }
-    
 
-    //ROS_INFO("Recive: [%f] [%f] [%f] [%f] [%f] [%f]",pos[0],pos[1],pos[2],pos[3],pos[4],pos[5]);
- 
+    //cout<<endl<<"nowRobotAngle: "<<nowRobotAngle.transpose()<<endl<<endl;
+
+    for(int i = 0; i < 6; i++){
+        if(nowRobotAngle(i) < RobotAngleL(i)){
+            //cout<<"Attention!!!: No."<<i<<" outrange!"<<endl;
+        }
+        else if(nowRobotAngle(i) > RobotAngleU(i)){
+            //cout<<"Attention!!!: No."<<i<<" outrange!"<<endl;
+        }
+    }
+
 }
 
 void LinkStatesCallBack(const gazebo_msgs::LinkStatesConstPtr& msg){
@@ -55,6 +67,11 @@ void LinkStatesCallBack(const gazebo_msgs::LinkStatesConstPtr& msg){
     
 
 }
+
+void initalRobotAngleUL(){
+    RobotAngleL << -3.14, -2.01, -0.69, -3.14, -0.78, -3.14;
+    RobotAngleU << 3.14, 2.01, 3.83, 3.14, 3.92, 3.14;
+}
  
 int main(int argc, char **argv)
 {
@@ -65,11 +82,13 @@ int main(int argc, char **argv)
     ros::NodeHandle n;
     ros::Rate loop_rate(3);
 
-    ros::Subscriber sub = n.subscribe<sensor_msgs::JointState>("/joint_states", 10, jointstatesCallback);
+    ros::Subscriber sub = n.subscribe<sensor_msgs::JointState>("/probot_anno/joint_states", 1, jointstatesCallback);
 
-    ros::Subscriber sublink6 = n.subscribe<gazebo_msgs::LinkStates>("/gazebo/link_states", 10, LinkStatesCallBack);
+    ros::Subscriber sublink6 = n.subscribe<gazebo_msgs::LinkStates>("/gazebo/link_states", 1, LinkStatesCallBack);
 
     cout<<fixed<<setprecision(3);
+
+    initalRobotAngleUL();
 
     while(ros::ok()){
         ros::spinOnce();
