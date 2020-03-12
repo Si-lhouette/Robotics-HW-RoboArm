@@ -125,7 +125,7 @@ int main(int argc, char **argv)
     VectorXd robotAngle(6);
     //robotAngle << -90, 60, 30, 0, 0, 0;
     //robotAngle = robotAngle * M_PI/180;
-    robotAngle << 0,60,30,0,0,0;
+    robotAngle << 0.927, -0.687, -0.396, 0, 1.083, 0.927;
 // resRobotAngle: 0.943592, -0.924595, -0.347169, 0.965984, 2.96725, -0.244775, 
 
 // resRobotAngle: -2.198, -3.41613, -0.347169, -1.17125, 2.6454, -2.29525, 

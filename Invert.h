@@ -2,6 +2,9 @@
 //Input:DH参数，Pose
 //Output:各关节角度
 
+#ifndef _INVERT_H_
+#define _INVERT_H_
+
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -400,3 +403,4 @@ void InitialDH(){
 
 
 
+#endif

@@ -18,7 +18,7 @@
 // 第四个点:[0.3, -0.1, 0.122, 1.57, -1.57, 0]
 
 VectorXd nowRobotAngle(6);
-
+Vector3d Link6Pose;
 
 
 
@@ -197,11 +197,34 @@ void jointstatesCallback(const sensor_msgs::JointStateConstPtr& msg)
     //cout<<"nowRobotAngle: "<<nowRobotAngle.transpose()<<endl;
 }
 
+void LinkStatesCallBack(const gazebo_msgs::LinkStatesConstPtr& msg){
+	geometry_msgs::Pose Link6msg = msg->pose[7];
+
+	Link6Pose << Link6msg.position.x, Link6msg.position.y, Link6msg.position.z;
+    // cout<<endl<<"-------------------------"<<endl;
+    // cout<<msg->name[7]<<endl;
+    // cout<<"Pose: "<<endl<<Link6Pose.transpose()<<endl;
+
+    // Quaterniond Link6q(Link6msg.orientation.w, Link6msg.orientation.x, Link6msg.orientation.y, Link6msg.orientation.z);
+	// Vector3d eulerAngle1=Link6q.matrix().eulerAngles(0,1,2);
+    // cout << "EulerAngles:"<<endl<<eulerAngle1<<endl<<endl;
+
+    geometry_msgs::Twist Tw6 = msg->twist[7];
+
+    // //全局线速度
+    // cout<<"linear speed: "<<Tw6.linear.x<<", "<<Tw6.linear.y<<", "<<Tw6.linear.z<<endl;
+    // //全局角速度
+    // cout<<"angle speed: "<<Tw6.angular.x<<", "<<Tw6.angular.y<<", "<<Tw6.angular.z<<endl;
+    
+
+}
+
 int main(int argc, char **argv)
 {
     ros::init(argc, argv, "trajectory_gen");
     ros::NodeHandle nh;
     ros::Subscriber sub = nh.subscribe<sensor_msgs::JointState>("/probot_anno/joint_states", 1, jointstatesCallback);
+    ros::Subscriber sublink6 = nh.subscribe<gazebo_msgs::LinkStates>("/gazebo/link_states", 1, LinkStatesCallBack);
     ros::Publisher vel_pub = nh.advertise<std_msgs::Float64MultiArray>("/probot_anno/arm_vel_controller/command", 100);
     ros::Rate loopHZ(50);
 
@@ -226,7 +249,7 @@ int main(int argc, char **argv)
     // }
 
 
-    genTrajectory(wp_list);
+    //genTrajectory(wp_list);
 
     Matrix<double, 18, 6> polyCoeff;
     getPolyCoeff(polyCoeff);
@@ -249,37 +272,40 @@ int main(int argc, char **argv)
     double t;
     int cnt = 0;
     // cin>>cnt;
-    // while (ros::ok()){
+    while (ros::ok()){
         
-    //     t = Clock.toc();
-    //     if(t > 15.0){
-    //         break;
-    //     }
-    //     //cout<<endl<<"-------------------"<<"t: "<<t<<endl;
-    //     getrobotv(Robotv, t, polyCoeff, ts);
-    //     for(int i = 0; i < 6; i++){
-    //         init_pos.data.at(i) = Robotv(i);
-    //     }
-    //     //cout<<"pub: "<<Robotv.transpose()<<endl;
+        t = Clock.toc();
+        if(t > 15.0){
+            break;
+        }
+        //cout<<endl<<"-------------------"<<"t: "<<t<<endl;
+        getrobotv(Robotv, t, polyCoeff, ts);
+        for(int i = 0; i < 6; i++){
+            init_pos.data.at(i) = Robotv(i);
+        }
+        //cout<<"pub: "<<Robotv.transpose()<<endl;
 
-    //     vel_pub.publish(init_pos);
+        vel_pub.publish(init_pos);
 
 
-    //     if(1){
-    //         ros::spinOnce();
-    //         cnt = 0;
-    //         for(int i = 0; i < wp_list.size(); i++){
-    //             double resuial = (nowRobotAngle - wp_list[i]).cwiseAbs().sum();
-    //             cout<<"resuial to No."<<i<<" : "<<resuial<<endl;
-    //             if( resuial < 0.1 ){
-    //                 cout<< "Get wayPoint No."<<i<<"   !!!!!!!!!!!!!!!"<<endl;
-    //             }
-    //         }
-    //     }
+        if(abs(t-5)<0.02 || abs(t-10)<0.02 || abs(t-15)<0.02){
+            cout<<endl<<"-------------------"<<"t: "<<t<<endl;
+            ros::spinOnce();
+            cout<<"Link6Pose: "<< Link6Pose.transpose()<<endl;
+            cout<<"nowRobotAngle: "<<nowRobotAngle.transpose()<<endl;
+            cnt = 0;
+            for(int i = 1; i < wp_list.size(); i++){
+                double resuial = (nowRobotAngle - wp_list[i]).block(0,0,3,1).cwiseAbs().sum();
+                cout<<endl<<"resuial to No."<<i<<" : "<<resuial<<endl;
+                if( resuial < 0.1 ){
+                    cout<< "Get wayPoint No."<<i<<"   !!!!!!!!!!!!!!!"<<endl;
+                }
+            }
+        }
         
-    //     loopHZ.sleep();
-    //     cnt++;
-    // }
+        loopHZ.sleep();
+        cnt++;
+    }
 
 
 

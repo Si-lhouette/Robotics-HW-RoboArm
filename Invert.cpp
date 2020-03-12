@@ -14,8 +14,8 @@ int main(int argc, char **argv)
 
 
     /* 设定目标末端位姿 */
-    Vector3d aimendPose(0.2, 0.2, 0.2007);
-    Vector3d aimendAngle(1.57, -1.57, 0);
+    Vector3d aimendPose(0.4, 0, 0.3);
+    Vector3d aimendAngle(1.57,0, 0);
     VectorXd robotAngle(6);
 
 
@@ -79,6 +79,7 @@ int main(int argc, char **argv)
     sleep(1);
 
     int pubnum;
+
     while(1){
         cout<<"select pubnum:";
         cin>>pubnum;

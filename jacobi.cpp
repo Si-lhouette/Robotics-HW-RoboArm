@@ -7,7 +7,7 @@
 #include <geometry_msgs/Twist.h>
 
 #include "jacobi.h"
-#include "tic_toc.h"
+#include<ros/time.h>
 
 ros::Publisher vel_pub;
 
@@ -27,7 +27,7 @@ int main(int argc, char **argv)
 {
     ros::init(argc, argv, "jacobi");
     ros::NodeHandle nh;
-    ros::Rate loopHZ(50);
+    ros::Rate loopHZ(100);
     
     ros::Subscriber sub = nh.subscribe<sensor_msgs::JointState>("/probot_anno/joint_states", 10, jointstatesCallback);
 
@@ -48,14 +48,15 @@ int main(int argc, char **argv)
 
     VectorXd endv(6);
 
-    TicToc Clock;
+    ros::Time begin=ros::Time::now();
     double t;
     double nowv;
     double a1 = 0.005;
     double a2 = 0.004;
     while (ros::ok()){
-        ros::spinOnce();
-        t = Clock.toc();
+        ros::Time nowtime=ros::Time::now();
+        t = nowtime.toSec() - begin.toSec();
+
         cout<<endl<<"-------------------"<<"t: "<<t<<endl;
         if(t < 4.0){
             cout<<"step 01"<<endl;
@@ -73,6 +74,7 @@ int main(int argc, char **argv)
             endv << 0,0,0,0,0,0;
         }
 
+        ros::spinOnce();
         velcontrol(endv, nowRobotAngle, init_pos);
         vel_pub.publish(init_pos);
         
