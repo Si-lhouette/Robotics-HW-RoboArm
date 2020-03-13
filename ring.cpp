@@ -201,6 +201,7 @@ void getPolyCoeff(Matrix<double, 54, 6>& polyCoeff){
         1.63390e-05, 1.46930e-02, 1.77370e-02, 00000, -3.81238e-02, 1.63390e-05, 
         1.02557e-03, -2.90664e-03, -4.07095e-03, 00000, 8.15702e-03, 1.02557e-03;
 
+
     cout<<"getpoly OK"<<endl;
 }
 
@@ -343,7 +344,7 @@ int main(int argc, char **argv)
             startPoint = true;
             cnt++;
             t -= cnt*seg_t*4;
-            if(cnt >= 8){
+            if(cnt >= 9-1){
                 break;
             }
         }
@@ -369,7 +370,7 @@ int main(int argc, char **argv)
             ros::spinOnce();
 
             cout<<endl<<"-------------------"<<"t: "<<nowtime.toSec() - begin.toSec()<<endl;
-            cout<<"No."<<cnt+2<<" Back To Start!!!!!"<<endl;
+            cout<<"No."<<cnt+1<<" Back To Start!!!!!"<<endl;
 
             cout<<"Link6Pose: "<< Link6Pose.transpose()<<endl;
 
