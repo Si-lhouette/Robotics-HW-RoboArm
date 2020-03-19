@@ -47,11 +47,11 @@ void jointstatesCallback(const sensor_msgs::JointStateConstPtr& msg)
 }
 
 void LinkStatesCallBack(const gazebo_msgs::LinkStatesConstPtr& msg){
-	geometry_msgs::Pose Link6msg = msg->pose[10];
+	geometry_msgs::Pose Link6msg = msg->pose[7];
 	Vector3d Link6Pose;
 	Link6Pose << Link6msg.position.x, Link6msg.position.y, Link6msg.position.z;
     cout<<endl<<"-------------------------"<<endl;
-    cout<<msg->name[10]<<endl;
+    cout<<msg->name[7]<<endl;
     cout<<"Pose: "<<endl<<Link6Pose.transpose()<<endl;
 
     // Quaterniond Link6q(Link6msg.orientation.w, Link6msg.orientation.x, Link6msg.orientation.y, Link6msg.orientation.z);

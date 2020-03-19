@@ -158,7 +158,7 @@ void setzero(Matrix4d& T){
     for(int i = 0; i < 4; i++){ //将本应是0的元素赋值为0
         for(int j = 0; j < 4; j++){
             if(abs(T(i,j)) < 1e-3){
-                T(i,j) = 0;
+                T(i,j) = 1e-30;
             }
         }
     }
@@ -176,7 +176,7 @@ void MotionLink4(Vector3d& endPose, Matrix3d& RM4 , VectorXd& robotAngle){
     }
     //cout<<"lin4 pose:"<<"("<<T_all(0,3)<<", "<<T_all(1,3)<<", "<<T_all(2,3)<<")"<<endl;
 
-    setzero(T_all);
+    //setzero(T_all);
     endPose << T_all(0, 3), T_all(1, 3), T_all(2, 3);
 
     RM4 = T_all.block(0,0,3,3);
@@ -202,11 +202,13 @@ void Motion(Vector3d& endPose, Vector3d& endAngle , VectorXd& robotAngle){
     //cout<<endl<<"expect T_06:"<<endl<<T_all<<endl;
 
     getT(T, 0, 0, 0.055, 0);   //第七坐标轴平移
+    setzero(T);
     T_all *= T;
     getT(T, (-90*M_PI/180), 0, 0, 0);   //gazebo末端坐标系旋转
+    setzero(T);
     T_all *= T;
 
-    setzero(T_all);
+    //setzero(T_all);
     endPose << T_all(0, 3), T_all(1, 3), T_all(2, 3);
 
     //计算末端XYZ固定角
@@ -238,18 +240,23 @@ void InvertMotion(Vector3d& endPose, Vector3d& endAngle , vector<Eigen::VectorXd
     T_all(1,3) = endPose(1);
     T_all(2,3) = endPose(2);
     T_all(3,3) = 1;
-    //cout<<endl<<"Tall: "<<endl<<T_all<<endl;
+    T_all(3,0) = 0;
+    T_all(3,1) = 0;
+    T_all(3,2) = 0;
+
 
 
     /* 计算Link4齐次变换矩阵 */
     Matrix4d T;
     Matrix4d T06;
     getT(T, (-90*M_PI/180), 0, 0, 0);
+    setzero(T);
     T_all = T_all*T.inverse();
-    setzero(T_all);
+    //setzero(T_all);
     getT(T, 0, 0, 0.055, 0);
+    setzero(T);
     T06 = T_all*T.inverse();
-    setzero(T06);
+    //setzero(T06);
     //cout<<endl<<"T06: "<<endl<<T06<<endl;
     double ex, ey, ez, r;
     ex = T06(0,3);

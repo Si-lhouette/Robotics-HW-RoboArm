@@ -14,8 +14,8 @@ int main(int argc, char **argv)
 
 
     /* 设定目标末端位姿 */
-    Vector3d aimendPose(0.4, 0, 0.3);
-    Vector3d aimendAngle(1.57,0, 0);
+    Vector3d aimendPose(0.3, -0.1, 0.122);
+    Vector3d aimendAngle(1.57, -1.57, 0);
     VectorXd robotAngle(6);
 
 
@@ -45,8 +45,11 @@ int main(int argc, char **argv)
         Vector3d endPose;
         Vector3d endAngle;
         Motion(endPose ,endAngle, robotAngle);
-        if( (endPose-aimendPose).cwiseAbs().sum() + (endAngle-aimendAngle).cwiseAbs().sum()< 1e-2){
+        if( (endPose-aimendPose).cwiseAbs().sum() + (endAngle-aimendAngle).cwiseAbs().sum()< 1e-4){
             cout<<" v!"<<endl;
+            cout<<"diffabs: "<<(endPose-aimendPose).cwiseAbs().sum() + (endAngle-aimendAngle).cwiseAbs().sum()<<endl;
+            cout<<"resEndPose: "<<endl<<endPose.transpose()<<endl;
+            cout<<"resEndAngle: "<<endl<<endAngle.transpose()<<endl;
         }else{
             cout<<" x!"<<endl;
             cout<<"diffabs: "<<(endPose-aimendPose).cwiseAbs().sum() + (endAngle-aimendAngle).cwiseAbs().sum()<<endl;

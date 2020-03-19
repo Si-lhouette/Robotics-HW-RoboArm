@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 
 
     VectorXd endv(6);
-    endv << 0.0, 0.0, 0.0, -0.1, 0, 0;
+    endv << 0.0, 0.0, 0.0, -0.2, 0, 0;
 
     int cnt = 100;
 

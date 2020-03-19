@@ -91,13 +91,13 @@ void Motion(Vector3d& endPose, Vector3d& endAngle , VectorXd& robotAngle){
     getT(T, (-90*M_PI/180), 0, 0, 0);   //gazebo末端坐标系旋转
     T_all *= T;
 
-    for(int i = 0; i < 4; i++){ //将本应是0的元素赋值为0
-        for(int j = 0; j < 4; j++){
-            if(abs(T_all(i,j)) < 1e-5){
-                T_all(i,j) = 0;
-            }
-        }
-    }
+    // for(int i = 0; i < 4; i++){ //将本应是0的元素赋值为0
+    //     for(int j = 0; j < 4; j++){
+    //         if(abs(T_all(i,j)) < 1e-5){
+    //             T_all(i,j) = 0;
+    //         }
+    //     }
+    // }
     endPose << T_all(0, 3), T_all(1, 3), T_all(2, 3);
 
     //计算末端XYZ固定角
