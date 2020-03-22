@@ -1,0 +1,10 @@
+<launch>
+
+  <node pkg="probot_gazebo" type="ring" name="ring" output="screen"/>
+
+
+  
+  
+
+
+</launch>

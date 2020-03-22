@@ -1,0 +1,35 @@
+<launch>
+  
+    <!-- Launch Gazebo  -->
+    <include file="$(find probot_gazebo)/launch/probot_anno_velocity_control/probot_anno_gazebo_world_vel.launch" />
+
+    <!-- ros_control arm launch file -->
+    <include file="$(find probot_gazebo)/launch/probot_anno_velocity_control/probot_anno_gazebo_states.launch" />   
+
+    <!-- ros_control trajectory control dof arm launch file -->
+    <include file="$(find probot_gazebo)/launch/probot_anno_velocity_control/probot_anno_velocity_controller.launch" />
+
+    <!-- Load the URDF, SRDF and other .yaml configuration files on the param server -->
+    <include file="$(find probot_gazebo)/launch/probot_anno_velocity_control/planning_context_vel.launch">
+      <arg name="load_robot_description" value="true"/>
+    </include>
+
+    <!-- We do not have a robot connected, so publish fake joint states -->
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+      <param name="use_gui" value="false"/>
+      <rosparam param="source_list">[move_group/fake_controller_joint_states]</rosparam>
+    </node>
+
+    <!-- Run the main MoveIt! executable without trajectory execution (we do not have controllers configured by default) -->
+    <include file="$(find probot_anno_moveit_config)/launch/move_group.launch">
+      <arg name="allow_trajectory_execution" value="true"/>
+      <arg name="fake_execution" value="true"/>
+      <arg name="info" value="true"/>
+      <arg name="debug" value="false"/>
+    </include>
+
+    <!-- moveit launch file 
+    <include file="$(find probot_anno_moveit_config)/launch/moveit_planning_execution.launch">
+        <arg name="gazebo" default="true" />
+    </include>-->
+</launch>

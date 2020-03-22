@@ -1,0 +1,20 @@
+probot_anno:
+  arm_vel_controller:
+    type: "velocity_controllers/JointGroupVelocityController"
+    joints:
+      - joint_1
+      - joint_2
+      - joint_3
+      - joint_4
+      - joint_5
+      - joint_6
+
+    gains:
+      joint_1:   {p: 1000.0, i: 0.0, d: 0.1}
+      joint_2:   {p: 1000.0, i: 0.0, d: 0.1}
+      joint_3:   {p: 1000.0, i: 0.0, d: 0.1}
+      joint_4:   {p: 1000.0, i: 0.0, d: 0.1}
+      joint_5:   {p: 1000.0, i: 0.0, d: 0.1}
+      joint_6:   {p: 1000.0, i: 0.0, d: 0.1}
+
+  

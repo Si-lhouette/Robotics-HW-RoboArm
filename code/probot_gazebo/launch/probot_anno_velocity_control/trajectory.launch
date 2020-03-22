@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="probot_gazebo" type="trajectory_gen" name="trajectory_gen" output="screen"/>
+  
+
+
+</launch>

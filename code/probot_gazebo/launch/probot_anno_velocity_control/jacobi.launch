@@ -1,0 +1,9 @@
+<launch>
+
+  <!--node pkg="probot_gazebo" type="control_example" name="control_example" output="screen"/-->
+  <node pkg="probot_gazebo" type="jacobi" name="jacobi" output="screen"/>
+  
+  
+
+
+</launch>

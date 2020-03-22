@@ -1,0 +1,9 @@
+<launch>
+
+
+  <node pkg="probot_gazebo" type="fixpoint" name="fixpoint" output="screen"/>
+  
+  
+
+
+</launch>
