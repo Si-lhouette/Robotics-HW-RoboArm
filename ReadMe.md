@@ -2,12 +2,15 @@
 
 ### File
 
-| Folder | Presentation                                                 |
-| ------ | ------------------------------------------------------------ |
-| /code  | 含`probot_gazebo` ROS Package; 其中/src 下包含实验1-5&大作业代码 |
-| /img   | 文档内所需图片                                               |
-| /vedio | 验证视频                                                     |
-| /doc   | md文档                                                       |
+| Folder      | Presentation                                                 |
+| ----------- | ------------------------------------------------------------ |
+| /code       | 含`probot_gazebo` ROS Package; 其中/src 下包含实验1-5&大作业代码 |
+| /img        | 文档内所需图片                                               |
+| /video      | 验证视频                                                     |
+| /doc        | md文档                                                       |
+| /experiment | 机械臂敲铃实物代码及报告                                     |
+
+实物敲铃实验的代码为MATLAB代码，使用了MATLAB ROS ToolBox.
 
 
 
